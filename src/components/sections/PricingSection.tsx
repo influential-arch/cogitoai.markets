@@ -5,33 +5,33 @@ const tiers = [
   {
     name: "Free",
     price: "0",
-    priceId: "", // Free tier doesn't need a price ID
+    priceId: "price_free",
     features: [
+      "10% access to all features",
       "Basic market analysis",
       "Limited historical data",
-      "Daily market summary",
-      "Community access",
+      "Basic forecasts",
     ],
   },
   {
     name: "Silver",
     price: "29",
-    priceId: "price_silver", // Replace with your actual Stripe price ID
+    priceId: "price_silver",
     features: [
+      "50% access to all features",
       "Advanced market analysis",
-      "Full historical data",
-      "Real-time alerts",
+      "Extended historical data",
       "Priority support",
     ],
   },
   {
     name: "Gold",
     price: "79",
-    priceId: "price_gold", // Replace with your actual Stripe price ID
+    priceId: "price_gold",
     features: [
-      "Premium market insights",
-      "AI-powered forecasting",
-      "Custom alerts",
+      "75% access to all features",
+      "Premium data visualizations",
+      "Detailed market reports",
       "1-on-1 consultation",
     ],
     popular: true,
@@ -39,11 +39,11 @@ const tiers = [
   {
     name: "Platinum",
     price: "199",
-    priceId: "price_platinum", // Replace with your actual Stripe price ID
+    priceId: "price_platinum",
     features: [
+      "100% access to all features",
       "Institutional-grade analysis",
-      "API access",
-      "Custom reporting",
+      "Custom API access",
       "Dedicated account manager",
     ],
   },

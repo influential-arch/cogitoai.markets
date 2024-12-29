@@ -1,18 +1,19 @@
-import React from 'react';
-import { HeroSection } from '@/components/sections/HeroSection';
-import { StatsSection } from '@/components/sections/StatsSection';
-import { FeaturesSection } from '@/components/sections/FeaturesSection';
-import { PricingSection } from '@/components/sections/PricingSection';
+import { HeroSection } from "@/components/sections/HeroSection";
+import { FeaturesSection } from "@/components/sections/FeaturesSection";
+import { PricingSection } from "@/components/sections/PricingSection";
+import { StatsSection } from "@/components/sections/StatsSection";
+import { NavBar } from "@/components/NavBar";
 
-const Index = () => {
+export default function Index() {
   return (
     <div className="min-h-screen">
-      <HeroSection />
-      <StatsSection />
-      <FeaturesSection />
-      <PricingSection />
+      <NavBar />
+      <div className="pt-16">
+        <HeroSection />
+        <StatsSection />
+        <FeaturesSection />
+        <PricingSection />
+      </div>
     </div>
   );
-};
-
-export default Index;
+}
