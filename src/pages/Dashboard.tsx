@@ -2,6 +2,7 @@ import React from 'react';
 import { Card } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { BarChart3, Brain, TrendingUp } from "lucide-react";
+import { BackButton } from "@/components/BackButton";
 
 const mockData = [
   { date: '2024-01', value: 100 },
@@ -14,7 +15,8 @@ const mockData = [
 export default function Dashboard() {
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
-      <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
+      <BackButton />
+      <h1 className="text-3xl font-bold mb-8 mt-8">Dashboard</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="glass-card p-6">
