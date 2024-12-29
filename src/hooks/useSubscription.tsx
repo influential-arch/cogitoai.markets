@@ -4,22 +4,22 @@ import { supabase } from "@/lib/supabase";
 export type SubscriptionTier = "free" | "silver" | "gold" | "platinum";
 
 export const useSubscription = () => {
-  const { data: session } = await supabase.auth.getSession();
-
   const { data: tier = "free" } = useQuery({
-    queryKey: ["subscription", session?.user?.id],
+    queryKey: ["subscription"],
     queryFn: async () => {
-      if (!session?.user?.id) return "free";
+      const { data: sessionData } = await supabase.auth.getSession();
+      const userId = sessionData.session?.user?.id;
+
+      if (!userId) return "free";
       
       const { data: subscription } = await supabase
         .from("user_subscriptions")
         .select("tier")
-        .eq("user_id", session.user.id)
+        .eq("user_id", userId)
         .single();
       
       return subscription?.tier || "free";
     },
-    enabled: !!session?.user?.id,
   });
 
   const getAccessPercentage = (userTier: SubscriptionTier) => {
