@@ -9,7 +9,7 @@ interface SubscriptionTierProps {
   priceId: string;
 }
 
-export const StripeCheckout = ({ name, price, features, popular, priceId }: SubscriptionTierProps) => {
+export const SubscriptionTier = ({ name, price, features, popular, priceId }: SubscriptionTierProps) => {
   return (
     <div className={`subscription-card relative ${popular ? 'border-primary/50' : ''}`}>
       {popular && (
