@@ -5,6 +5,7 @@ const tiers = [
   {
     name: "Free",
     price: "0",
+    priceId: "", // Free tier doesn't need a price ID
     features: [
       "Basic market analysis",
       "Limited historical data",
@@ -15,6 +16,7 @@ const tiers = [
   {
     name: "Silver",
     price: "29",
+    priceId: "price_silver", // Replace with your actual Stripe price ID
     features: [
       "Advanced market analysis",
       "Full historical data",
@@ -25,6 +27,7 @@ const tiers = [
   {
     name: "Gold",
     price: "79",
+    priceId: "price_gold", // Replace with your actual Stripe price ID
     features: [
       "Premium market insights",
       "AI-powered forecasting",
@@ -36,6 +39,7 @@ const tiers = [
   {
     name: "Platinum",
     price: "199",
+    priceId: "price_platinum", // Replace with your actual Stripe price ID
     features: [
       "Institutional-grade analysis",
       "API access",

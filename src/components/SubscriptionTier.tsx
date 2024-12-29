@@ -1,14 +1,15 @@
 import { Check } from "lucide-react";
-import { Button } from "./ui/button";
+import { StripeCheckout } from "./StripeCheckout";
 
 interface SubscriptionTierProps {
   name: string;
   price: string;
   features: string[];
   popular?: boolean;
+  priceId: string;
 }
 
-export const SubscriptionTier = ({ name, price, features, popular }: SubscriptionTierProps) => {
+export const StripeCheckout = ({ name, price, features, popular, priceId }: SubscriptionTierProps) => {
   return (
     <div className={`subscription-card relative ${popular ? 'border-primary/50' : ''}`}>
       {popular && (
@@ -29,9 +30,7 @@ export const SubscriptionTier = ({ name, price, features, popular }: Subscriptio
           </li>
         ))}
       </ul>
-      <Button className="w-full neon-glow" variant={popular ? "default" : "secondary"}>
-        Get Started
-      </Button>
+      <StripeCheckout priceId={priceId} buttonText="Get Started" />
     </div>
   );
 };
