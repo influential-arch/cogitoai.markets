@@ -28,22 +28,18 @@ export default function Register() {
 
   const handleSubmit = async (data: RegisterFormData) => {
     try {
-      const { error } = await supabase.auth.signUp({
+      const { error: signUpError } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
         options: {
           data: {
             full_name: data.name,
           },
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       });
 
-      if (error) throw error;
-
-      toast({
-        title: "Registration successful!",
-        description: "Please check your email to verify your account.",
-      });
+      if (signUpError) throw signUpError;
 
       // Create a free tier subscription for the new user
       const { data: { session } } = await supabase.auth.getSession();
@@ -54,6 +50,11 @@ export default function Register() {
           created_at: new Date().toISOString(),
         });
       }
+
+      toast({
+        title: "Registration successful!",
+        description: "You can now sign in with your credentials.",
+      });
 
       navigate('/login');
     } catch (error: any) {

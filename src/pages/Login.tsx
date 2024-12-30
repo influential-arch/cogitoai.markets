@@ -4,17 +4,40 @@ import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { BackButton } from "@/components/BackButton";
+import { supabase } from "@/lib/supabase";
 
 export default function Login() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Coming soon",
-      description: "Authentication will be implemented in the next phase",
-    });
+    const formData = new FormData(e.target as HTMLFormElement);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      if (data.user) {
+        toast({
+          title: "Success",
+          description: "Successfully logged in!",
+        });
+        navigate('/dashboard');
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -31,6 +54,7 @@ export default function Login() {
             <label htmlFor="email" className="text-sm font-medium">Email</label>
             <Input
               id="email"
+              name="email"
               type="email"
               placeholder="name@example.com"
               className="neon-glow"
@@ -42,6 +66,7 @@ export default function Login() {
             <label htmlFor="password" className="text-sm font-medium">Password</label>
             <Input
               id="password"
+              name="password"
               type="password"
               className="neon-glow"
               required
