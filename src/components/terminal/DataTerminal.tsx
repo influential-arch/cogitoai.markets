@@ -17,20 +17,19 @@ export const DataTerminal = () => {
   
   const { data: timeSeriesData, isLoading, error } = getDailyTimeSeries(selectedSymbol);
 
-  useEffect(() => {
-    if (!localStorage.getItem('RAPIDAPI_KEY')) {
-      setApiKeyDialogOpen(true);
-    }
-  }, []);
+  // Only show the dialog if user explicitly wants to use their own key
+  const handleUseCustomKey = () => {
+    setApiKeyDialogOpen(true);
+  };
 
   const handleSaveApiKey = () => {
     localStorage.setItem('RAPIDAPI_KEY', apiKey);
     setApiKeyDialogOpen(false);
     toast({
       title: "API Key Saved",
-      description: "Your RapidAPI key has been saved successfully.",
+      description: "Your custom RapidAPI key has been saved successfully.",
     });
-    window.location.reload(); // Reload to refresh queries with new API key
+    window.location.reload();
   };
 
   return (
@@ -38,9 +37,9 @@ export const DataTerminal = () => {
       <Dialog open={apiKeyDialogOpen} onOpenChange={setApiKeyDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Enter RapidAPI Key</DialogTitle>
+            <DialogTitle>Use Custom RapidAPI Key</DialogTitle>
             <DialogDescription>
-              Please enter your RapidAPI key to access market data. You can get your key from 
+              You can use your own RapidAPI key if you prefer. Get your key from 
               <a href="https://rapidapi.com/hub" target="_blank" rel="noopener noreferrer" className="text-primary ml-1">
                 RapidAPI
               </a>.
@@ -54,7 +53,7 @@ export const DataTerminal = () => {
               type="password"
             />
             <Button onClick={handleSaveApiKey} className="w-full">
-              Save API Key
+              Save Custom API Key
             </Button>
           </div>
         </DialogContent>

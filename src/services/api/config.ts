@@ -30,5 +30,12 @@ export const API_CONFIG = {
   }
 }
 
-// For development, store API key in localStorage
-export const getRapidAPIKey = () => localStorage.getItem('RAPIDAPI_KEY') || '';
+// Use the provided API key directly
+const RAPIDAPI_KEY = "dfc35ca888msh49d2d1bb0bfb134p1342ddjsn7890ecf4255c";
+
+export const getRapidAPIKey = () => {
+  // First try to get from localStorage in case user wants to use their own key
+  const localKey = localStorage.getItem('RAPIDAPI_KEY');
+  // If no local key is set, use the provided key
+  return localKey || RAPIDAPI_KEY;
+};
