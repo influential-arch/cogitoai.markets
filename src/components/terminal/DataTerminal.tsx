@@ -21,8 +21,6 @@ export const DataTerminal = () => {
     });
   }
 
-  // ... keep existing code (card layout and styling)
-
   return (
     <div className="p-4 glass-card min-h-screen">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
@@ -96,15 +94,13 @@ export const DataTerminal = () => {
 
         <div className="space-y-4">
           <Card className="glass-card p-4">
-            <h3 className="text-lg font-semibold mb-2">COT Data</h3>
-            <p className="text-muted-foreground">Net Long: +23.5K</p>
-            <p className="text-muted-foreground">Net Short: -12.3K</p>
+            <h3 className="text-lg font-semibold mb-2">Market Sentiment</h3>
+            <p className="text-muted-foreground">Analyzing market sentiment...</p>
           </Card>
 
           <Card className="glass-card p-4">
-            <h3 className="text-lg font-semibold mb-2">Smart Money</h3>
-            <p className="text-green-500">Bullish Signal</p>
-            <p className="text-sm text-muted-foreground mt-1">Institutional buying detected</p>
+            <h3 className="text-lg font-semibold mb-2">Short Interest</h3>
+            <p className="text-muted-foreground">Loading short interest data...</p>
           </Card>
         </div>
       </div>

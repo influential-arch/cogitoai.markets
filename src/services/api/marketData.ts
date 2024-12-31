@@ -1,4 +1,4 @@
-import { API_CONFIG } from './config'
+import { API_CONFIG, getRapidAPIKey } from './config';
 
 export interface MarketDataResponse {
   data: any;
@@ -8,9 +8,9 @@ export interface MarketDataResponse {
 class MarketDataService {
   private async fetchWithRapidAPI(url: string, host: string): Promise<MarketDataResponse> {
     try {
-      const response = await fetch(url, {
+      const response = await fetch(`https://${host}${url}`, {
         headers: {
-          'x-rapidapi-key': await this.getApiKey(),
+          'x-rapidapi-key': getRapidAPIKey(),
           'x-rapidapi-host': host
         }
       });
@@ -27,40 +27,30 @@ class MarketDataService {
     }
   }
 
-  private async getApiKey(): Promise<string> {
-    // In a production environment, this should be fetched from Supabase secrets
-    // For development, you can use localStorage temporarily
-    return localStorage.getItem('RAPIDAPI_KEY') || '';
-  }
-
-  // Sentiment Analysis
   async getMarketSentiment(articleId: string): Promise<MarketDataResponse> {
     return this.fetchWithRapidAPI(
-      `https://${API_CONFIG.SENTIMENT.BASE_URL}/rapid-api/articles/${articleId}/sentiment`,
+      API_CONFIG.SENTIMENT.ENDPOINTS.ARTICLE_SENTIMENT(articleId),
       API_CONFIG.SENTIMENT.HOST
     );
   }
 
-  // Price History
   async getPriceHistory(ticker: string): Promise<MarketDataResponse> {
     return this.fetchWithRapidAPI(
-      `https://${API_CONFIG.MACROTRENDS.BASE_URL}/price-history/${ticker}`,
+      API_CONFIG.MACROTRENDS.ENDPOINTS.PRICE_HISTORY(ticker),
       API_CONFIG.MACROTRENDS.HOST
     );
   }
 
-  // Short Interest
   async getShortInterest(symbol: string): Promise<MarketDataResponse> {
     return this.fetchWithRapidAPI(
-      `https://${API_CONFIG.IEX.BASE_URL}/stock/${symbol}/short-interest`,
+      API_CONFIG.IEX.ENDPOINTS.SHORT_INTEREST(symbol),
       API_CONFIG.IEX.HOST
     );
   }
 
-  // Daily Time Series
   async getDailyTimeSeries(symbol: string): Promise<MarketDataResponse> {
     return this.fetchWithRapidAPI(
-      `https://${API_CONFIG.ALPHA_VANTAGE.BASE_URL}/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=compact&datatype=json`,
+      API_CONFIG.ALPHA_VANTAGE.ENDPOINTS.TIME_SERIES(symbol),
       API_CONFIG.ALPHA_VANTAGE.HOST
     );
   }
