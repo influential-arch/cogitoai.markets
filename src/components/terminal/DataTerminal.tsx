@@ -1,19 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { ChartContainer } from "@/components/ui/chart";
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight, ArrowDownRight, RefreshCcw } from "lucide-react";
-
-const mockData = [
-  { time: '10:00', price: 1.1250 },
-  { time: '11:00', price: 1.1245 },
-  { time: '12:00', price: 1.1260 },
-  { time: '13:00', price: 1.1240 },
-  { time: '14:00', price: 1.1255 },
-];
+import { useMarketData } from '@/hooks/useMarketData';
+import { useToast } from '@/hooks/use-toast';
 
 export const DataTerminal = () => {
+  const [selectedSymbol, setSelectedSymbol] = useState('AAPL');
+  const { getDailyTimeSeries } = useMarketData();
+  const { toast } = useToast();
+  
+  const { data: timeSeriesData, isLoading, error } = getDailyTimeSeries(selectedSymbol);
+
+  if (error) {
+    toast({
+      title: "Error fetching market data",
+      description: error instanceof Error ? error.message : "Unknown error occurred",
+      variant: "destructive",
+    });
+  }
+
+  // ... keep existing code (card layout and styling)
+
   return (
     <div className="p-4 glass-card min-h-screen">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
@@ -55,26 +64,32 @@ export const DataTerminal = () => {
           <Card className="glass-card p-4">
             <h3 className="text-lg font-semibold mb-4">Price Chart</h3>
             <div className="h-[400px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={mockData}>
-                  <XAxis dataKey="time" stroke="#888888" />
-                  <YAxis stroke="#888888" />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "hsl(var(--background))",
-                      border: "1px solid hsl(var(--border))",
-                    }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="price"
-                    stroke="hsl(var(--primary))"
-                    strokeWidth={2}
-                    dot={false}
-                    className="animate-glow"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+              {isLoading ? (
+                <div className="flex items-center justify-center h-full">
+                  <RefreshCcw className="animate-spin" />
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={timeSeriesData?.data?.['Time Series (Daily)'] || []}>
+                    <XAxis dataKey="date" stroke="#888888" />
+                    <YAxis stroke="#888888" />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--background))",
+                        border: "1px solid hsl(var(--border))",
+                      }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="4. close"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth={2}
+                      dot={false}
+                      className="animate-glow"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              )}
             </div>
           </Card>
         </div>
