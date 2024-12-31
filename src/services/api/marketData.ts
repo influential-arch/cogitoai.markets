@@ -1,4 +1,5 @@
 import { API_CONFIG, getRapidAPIKey } from './config';
+import { toast } from "@/components/ui/use-toast";
 
 export interface MarketDataResponse {
   data: any;
@@ -6,24 +7,41 @@ export interface MarketDataResponse {
 }
 
 class MarketDataService {
+  private validateAPIKey(): string {
+    const apiKey = getRapidAPIKey();
+    if (!apiKey) {
+      throw new Error('RapidAPI key is not set. Please set it in localStorage.');
+    }
+    return apiKey;
+  }
+
   private async fetchWithRapidAPI(url: string, host: string): Promise<MarketDataResponse> {
     try {
+      const apiKey = this.validateAPIKey();
+      
       const response = await fetch(`https://${host}${url}`, {
         headers: {
-          'x-rapidapi-key': getRapidAPIKey(),
+          'x-rapidapi-key': apiKey,
           'x-rapidapi-host': host
         }
       });
       
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json();
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
       }
       
       const data = await response.json();
       return { data };
     } catch (error) {
       console.error('Market data fetch error:', error);
-      return { data: null, error: error instanceof Error ? error.message : 'Unknown error' };
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      toast({
+        variant: "destructive",
+        title: "API Error",
+        description: errorMessage
+      });
+      return { data: null, error: errorMessage };
     }
   }
 

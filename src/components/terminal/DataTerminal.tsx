@@ -1,28 +1,65 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { ArrowUpRight, ArrowDownRight, RefreshCcw } from "lucide-react";
 import { useMarketData } from '@/hooks/useMarketData';
 import { useToast } from '@/hooks/use-toast';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 export const DataTerminal = () => {
   const [selectedSymbol, setSelectedSymbol] = useState('AAPL');
+  const [apiKeyDialogOpen, setApiKeyDialogOpen] = useState(false);
+  const [apiKey, setApiKey] = useState(localStorage.getItem('RAPIDAPI_KEY') || '');
   const { getDailyTimeSeries } = useMarketData();
   const { toast } = useToast();
   
   const { data: timeSeriesData, isLoading, error } = getDailyTimeSeries(selectedSymbol);
 
-  if (error) {
+  useEffect(() => {
+    if (!localStorage.getItem('RAPIDAPI_KEY')) {
+      setApiKeyDialogOpen(true);
+    }
+  }, []);
+
+  const handleSaveApiKey = () => {
+    localStorage.setItem('RAPIDAPI_KEY', apiKey);
+    setApiKeyDialogOpen(false);
     toast({
-      title: "Error fetching market data",
-      description: error instanceof Error ? error.message : "Unknown error occurred",
-      variant: "destructive",
+      title: "API Key Saved",
+      description: "Your RapidAPI key has been saved successfully.",
     });
-  }
+    window.location.reload(); // Reload to refresh queries with new API key
+  };
 
   return (
     <div className="p-4 glass-card min-h-screen">
+      <Dialog open={apiKeyDialogOpen} onOpenChange={setApiKeyDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Enter RapidAPI Key</DialogTitle>
+            <DialogDescription>
+              Please enter your RapidAPI key to access market data. You can get your key from 
+              <a href="https://rapidapi.com/hub" target="_blank" rel="noopener noreferrer" className="text-primary ml-1">
+                RapidAPI
+              </a>.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 pt-4">
+            <Input
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+              placeholder="Enter your RapidAPI key"
+              type="password"
+            />
+            <Button onClick={handleSaveApiKey} className="w-full">
+              Save API Key
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
         <Card className="glass-card p-4 neon-glow">
           <div className="flex justify-between items-center">
