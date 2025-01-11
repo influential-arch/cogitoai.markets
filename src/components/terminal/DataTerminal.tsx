@@ -29,7 +29,7 @@ export const DataTerminal = () => {
   const {
     data: sentimentData,
     isLoading: sentimentLoading
-  } = getMarketSentiment('latest');
+  } = getMarketSentiment();
 
   useEffect(() => {
     if (timeSeriesError) {
