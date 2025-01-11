@@ -14,7 +14,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error('Missing Supabase environment variables. Please check your .env file.')
 }
 
-// Validate URL format and accessibility
+// Validate URL format
 try {
   new URL(supabaseUrl)
 } catch (error) {
@@ -31,13 +31,8 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     autoRefreshToken: true,
     persistSession: true,
-    detectSessionInUrl: true,
-    flowType: 'pkce'
-  },
-  global: {
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    detectSessionInUrl: false,
+    flowType: 'implicit'
   }
 })
 

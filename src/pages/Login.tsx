@@ -28,21 +28,25 @@ export default function Login() {
       }
 
       if (data?.user) {
-        toast({
-          title: "Success",
-          description: "Successfully logged in!",
-        });
+        // Check if session is established
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         
-        // Ensure session is properly set before navigation
-        const session = await supabase.auth.getSession();
-        if (session.data.session) {
+        if (sessionError) {
+          throw sessionError;
+        }
+
+        if (session) {
+          toast({
+            title: "Success",
+            description: "Successfully logged in!",
+          });
           navigate('/dashboard');
         } else {
-          throw new Error('Session not established');
+          throw new Error('Session could not be established');
         }
       }
     } catch (error: any) {
-      console.error('Login error details:', error);
+      console.error('Login error:', error);
       toast({
         title: "Login Failed",
         description: error.message || "An error occurred during login. Please try again.",
