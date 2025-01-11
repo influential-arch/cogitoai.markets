@@ -1,5 +1,5 @@
 import { API_CONFIG, getRapidAPIKey } from './config';
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 
 export interface MarketDataResponse {
   data: any;
@@ -20,9 +20,11 @@ class MarketDataService {
       const apiKey = this.validateAPIKey();
       
       const response = await fetch(`https://${host}${url}`, {
+        method: 'GET',
         headers: {
-          'x-rapidapi-key': apiKey,
-          'x-rapidapi-host': host
+          'X-RapidAPI-Key': apiKey,
+          'X-RapidAPI-Host': host,
+          'Content-Type': 'application/json'
         }
       });
       
