@@ -1,5 +1,5 @@
 import { API_CONFIG, getRapidAPIKey } from './config';
-import { toast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 export interface MarketDataResponse {
   data: any;
@@ -29,8 +29,7 @@ class MarketDataService {
       });
       
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
       
       const data = await response.json();
@@ -38,18 +37,17 @@ class MarketDataService {
     } catch (error) {
       console.error('Market data fetch error:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      toast({
-        variant: "destructive",
-        title: "API Error",
-        description: errorMessage
-      });
-      return { data: null, error: errorMessage };
+      return { 
+        data: null, 
+        error: errorMessage 
+      };
     }
   }
 
-  async getMarketSentiment(articleId: string): Promise<MarketDataResponse> {
+  async getMarketSentiment(): Promise<MarketDataResponse> {
+    // Use a fixed article ID (1) instead of 'latest'
     return this.fetchWithRapidAPI(
-      API_CONFIG.SENTIMENT.ENDPOINTS.ARTICLE_SENTIMENT(articleId),
+      API_CONFIG.SENTIMENT.ENDPOINTS.ARTICLE_SENTIMENT(1),
       API_CONFIG.SENTIMENT.HOST
     );
   }
@@ -62,9 +60,10 @@ class MarketDataService {
   }
 
   async getShortInterest(symbol: string): Promise<MarketDataResponse> {
+    // Use Alpha Vantage OVERVIEW endpoint which includes short interest data
     return this.fetchWithRapidAPI(
-      API_CONFIG.IEX.ENDPOINTS.SHORT_INTEREST(symbol),
-      API_CONFIG.IEX.HOST
+      API_CONFIG.ALPHA_VANTAGE.ENDPOINTS.SHORT_INTEREST(symbol),
+      API_CONFIG.ALPHA_VANTAGE.HOST
     );
   }
 

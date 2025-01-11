@@ -1,13 +1,25 @@
 import { useQuery } from '@tanstack/react-query';
 import { marketDataService } from '@/services/api/marketData';
+import { useToast } from "@/hooks/use-toast";
 
 export const useMarketData = () => {
-  const getMarketSentiment = (articleId: string) => {
+  const { toast } = useToast();
+
+  const getMarketSentiment = () => {
     return useQuery({
-      queryKey: ['marketSentiment', articleId],
-      queryFn: () => marketDataService.getMarketSentiment(articleId),
+      queryKey: ['marketSentiment'],
+      queryFn: () => marketDataService.getMarketSentiment(),
       staleTime: 5 * 60 * 1000, // 5 minutes
-      retry: 2
+      retry: 2,
+      meta: {
+        onError: (error: Error) => {
+          toast({
+            title: "Error fetching market sentiment",
+            description: error.message,
+            variant: "destructive"
+          });
+        }
+      }
     });
   };
 
@@ -16,7 +28,16 @@ export const useMarketData = () => {
       queryKey: ['priceHistory', ticker],
       queryFn: () => marketDataService.getPriceHistory(ticker),
       staleTime: 5 * 60 * 1000,
-      retry: 2
+      retry: 2,
+      meta: {
+        onError: (error: Error) => {
+          toast({
+            title: "Error fetching price history",
+            description: error.message,
+            variant: "destructive"
+          });
+        }
+      }
     });
   };
 
@@ -25,7 +46,16 @@ export const useMarketData = () => {
       queryKey: ['shortInterest', symbol],
       queryFn: () => marketDataService.getShortInterest(symbol),
       staleTime: 15 * 60 * 1000, // 15 minutes
-      retry: 2
+      retry: 2,
+      meta: {
+        onError: (error: Error) => {
+          toast({
+            title: "Error fetching short interest",
+            description: error.message,
+            variant: "destructive"
+          });
+        }
+      }
     });
   };
 
@@ -34,7 +64,16 @@ export const useMarketData = () => {
       queryKey: ['dailyTimeSeries', symbol],
       queryFn: () => marketDataService.getDailyTimeSeries(symbol),
       staleTime: 5 * 60 * 1000,
-      retry: 2
+      retry: 2,
+      meta: {
+        onError: (error: Error) => {
+          toast({
+            title: "Error fetching daily time series",
+            description: error.message,
+            variant: "destructive"
+          });
+        }
+      }
     });
   };
 
