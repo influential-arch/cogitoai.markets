@@ -22,7 +22,10 @@ export default function Login() {
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Login error:', error);
+        throw error;
+      }
 
       if (data.user) {
         toast({
@@ -33,8 +36,8 @@ export default function Login() {
       }
     } catch (error: any) {
       toast({
-        title: "Error",
-        description: error.message,
+        title: "Login Failed",
+        description: error.message || "An error occurred during login. Please try again.",
         variant: "destructive",
       });
     }

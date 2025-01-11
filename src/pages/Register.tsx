@@ -28,7 +28,7 @@ export default function Register() {
 
   const handleSubmit = async (data: RegisterFormData) => {
     try {
-      const { error: signUpError } = await supabase.auth.signUp({
+      const { error: signUpError, data: signUpData } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
         options: {
@@ -42,25 +42,32 @@ export default function Register() {
       if (signUpError) throw signUpError;
 
       // Create a free tier subscription for the new user
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        await supabase.from('user_subscriptions').insert({
-          user_id: session.user.id,
-          tier: 'free',
-          created_at: new Date().toISOString(),
-        });
+      if (signUpData?.user) {
+        const { error: subscriptionError } = await supabase
+          .from('user_subscriptions')
+          .insert({
+            user_id: signUpData.user.id,
+            tier: 'free',
+            created_at: new Date().toISOString(),
+          });
+
+        if (subscriptionError) {
+          console.error('Error creating subscription:', subscriptionError);
+          // Continue with registration even if subscription creation fails
+        }
       }
 
       toast({
         title: "Registration successful!",
-        description: "You can now sign in with your credentials.",
+        description: "Please check your email to confirm your account.",
       });
 
       navigate('/login');
     } catch (error: any) {
+      console.error('Registration error:', error);
       toast({
         title: "Registration failed",
-        description: error.message,
+        description: error.message || "An error occurred during registration. Please try again.",
         variant: "destructive",
       });
     }
