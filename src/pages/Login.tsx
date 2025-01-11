@@ -27,14 +27,22 @@ export default function Login() {
         throw error;
       }
 
-      if (data.user) {
+      if (data?.user) {
         toast({
           title: "Success",
           description: "Successfully logged in!",
         });
-        navigate('/dashboard');
+        
+        // Ensure session is properly set before navigation
+        const session = await supabase.auth.getSession();
+        if (session.data.session) {
+          navigate('/dashboard');
+        } else {
+          throw new Error('Session not established');
+        }
       }
     } catch (error: any) {
+      console.error('Login error details:', error);
       toast({
         title: "Login Failed",
         description: error.message || "An error occurred during login. Please try again.",
